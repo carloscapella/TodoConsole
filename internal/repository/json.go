@@ -3,13 +3,14 @@ package repository
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"todo/internal/domain"
 )
 
 type JSONTaskRepository struct {
-	file string
+	file  string
 	tasks []domain.Task
 }
 
@@ -48,7 +49,7 @@ func (r *JSONTaskRepository) GetByID(id int) (*domain.Task, error) {
 			return &r.tasks[i], nil
 		}
 	}
-	return nil, errors.New("not found")
+	return nil, fmt.Errorf("task with id %d was not found", id)
 }
 
 func (r *JSONTaskRepository) Create(task *domain.Task) error {
@@ -74,11 +75,22 @@ func (r *JSONTaskRepository) Update(task *domain.Task) error {
 }
 
 func (r *JSONTaskRepository) Delete(id int) error {
+	// Check if task exists first
+	found := false
 	for i := range r.tasks {
 		if r.tasks[i].ID == id {
+			found = true
+			// Remove the task
 			r.tasks = append(r.tasks[:i], r.tasks[i+1:]...)
-			return r.save()
+			if err := r.save(); err != nil {
+				return err
+			}
+			fmt.Printf("Task with id %d was deleted successfully\n", id)
+			return nil
 		}
 	}
-	return errors.New("not found")
+	if !found {
+		return fmt.Errorf("task with id %d was not found", id)
+	}
+	return nil
 }

@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 	"todo/internal/domain"
 
@@ -63,7 +64,7 @@ func (r *SQLiteTaskRepository) GetByID(id int) (*domain.Task, error) {
 	var createdAt, updatedAt string
 	if err := row.Scan(&t.ID, &t.Title, &t.Completed, &createdAt, &updatedAt); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errors.New("not found")
+			return nil, fmt.Errorf("task with id %d was not found", id)
 		}
 		return nil, err
 	}
@@ -97,6 +98,25 @@ func (r *SQLiteTaskRepository) Update(task *domain.Task) error {
 }
 
 func (r *SQLiteTaskRepository) Delete(id int) error {
-	_, err := r.db.Exec("DELETE FROM tasks WHERE id = ?", id)
-	return err
+	// Check if task exists first
+	task, err := r.GetByID(id)
+	if err != nil {
+		return err
+	}
+	if task == nil {
+		return fmt.Errorf("task with id %d was not found", id)
+	}
+	res, err := r.db.Exec("DELETE FROM tasks WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return fmt.Errorf("task with id %d was not found", id)
+	}
+	fmt.Printf("Task with id %d was deleted successfully\n", id)
+	return nil
 }
