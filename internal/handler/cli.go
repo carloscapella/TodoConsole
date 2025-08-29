@@ -1,28 +1,21 @@
 package handler
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"todo/internal/usecase"
 )
 
-func RunCLI(uc *usecase.TaskUseCase) {
-	add := flag.String("add", "", "Add a new task")
-	list := flag.Bool("list", false, "List all tasks")
-	complete := flag.Int("complete", 0, "Mark task as complete by ID")
-	delete := flag.Int("delete", 0, "Delete task by ID")
-	flag.Parse()
-
+func RunCLI(uc *usecase.TaskUseCase, add string, list bool, complete int, deleteTask int) {
 	switch {
-	case *add != "":
-		err := uc.Add(*add)
+	case add != "":
+		err := uc.Add(add)
 		if err != nil {
 			fmt.Println("Error:", err)
 			os.Exit(1)
 		}
 		fmt.Println("Task added!")
-	case *list:
+	case list:
 		tasks, err := uc.List()
 		if err != nil {
 			fmt.Println("Error:", err)
@@ -31,15 +24,15 @@ func RunCLI(uc *usecase.TaskUseCase) {
 		for _, t := range tasks {
 			fmt.Printf("[%d] %s (done: %v)\n", t.ID, t.Title, t.Completed)
 		}
-	case *complete > 0:
-		err := uc.Complete(*complete)
+	case complete > 0:
+		err := uc.Complete(complete)
 		if err != nil {
 			fmt.Println("Error:", err)
 			os.Exit(1)
 		}
 		fmt.Println("Task completed!")
-	case *delete > 0:
-		err := uc.Delete(*delete)
+	case deleteTask > 0:
+		err := uc.Delete(deleteTask)
 		if err != nil {
 			fmt.Println("Error:", err)
 			os.Exit(1)
@@ -47,6 +40,9 @@ func RunCLI(uc *usecase.TaskUseCase) {
 		fmt.Println("Task deleted!")
 	default:
 		fmt.Println("Usage:")
-		flag.PrintDefaults()
+		fmt.Println("  -add string\n\t\tAdd a new task")
+		fmt.Println("  -list\n\t\tList all tasks")
+		fmt.Println("  -complete int\n\t\tMark task as complete by ID")
+		fmt.Println("  -delete int\n\t\tDelete task by ID")
 	}
 }
