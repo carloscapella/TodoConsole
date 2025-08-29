@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 	"todo/internal/domain"
 
@@ -63,7 +64,7 @@ func (r *SQLiteTaskRepository) GetByID(id int) (*domain.Task, error) {
 	var createdAt, updatedAt string
 	if err := row.Scan(&t.ID, &t.Title, &t.Completed, &createdAt, &updatedAt); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errors.New("not found")
+			return nil, fmt.Errorf("task with id %d was not found", id)
 		}
 		return nil, err
 	}

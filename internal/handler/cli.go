@@ -34,7 +34,7 @@ func RunCLI(uc *usecase.TaskUseCase, add string, list bool, complete int, delete
 	case deleteTask > 0:
 		err := uc.Delete(deleteTask)
 		if err != nil {
-			fmt.Println("Error:", err)
+			fmt.Println("Errors:", err)
 			os.Exit(1)
 		}
 		fmt.Println("Task deleted!")

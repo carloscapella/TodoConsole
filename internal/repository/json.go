@@ -3,13 +3,14 @@ package repository
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"todo/internal/domain"
 )
 
 type JSONTaskRepository struct {
-	file string
+	file  string
 	tasks []domain.Task
 }
 
@@ -48,7 +49,7 @@ func (r *JSONTaskRepository) GetByID(id int) (*domain.Task, error) {
 			return &r.tasks[i], nil
 		}
 	}
-	return nil, errors.New("not found")
+	return nil, fmt.Errorf("task with id %d was not found", id)
 }
 
 func (r *JSONTaskRepository) Create(task *domain.Task) error {
