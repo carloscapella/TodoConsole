@@ -98,6 +98,25 @@ func (r *SQLiteTaskRepository) Update(task *domain.Task) error {
 }
 
 func (r *SQLiteTaskRepository) Delete(id int) error {
-	_, err := r.db.Exec("DELETE FROM tasks WHERE id = ?", id)
-	return err
+	// Check if task exists first
+	task, err := r.GetByID(id)
+	if err != nil {
+		return err
+	}
+	if task == nil {
+		return fmt.Errorf("task with id %d was not found", id)
+	}
+	res, err := r.db.Exec("DELETE FROM tasks WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return fmt.Errorf("task with id %d was not found", id)
+	}
+	fmt.Printf("Task with id %d was deleted successfully\n", id)
+	return nil
 }

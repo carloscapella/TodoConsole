@@ -75,11 +75,22 @@ func (r *JSONTaskRepository) Update(task *domain.Task) error {
 }
 
 func (r *JSONTaskRepository) Delete(id int) error {
-	for i := range r.tasks {
-		if r.tasks[i].ID == id {
-			r.tasks = append(r.tasks[:i], r.tasks[i+1:]...)
-			return r.save()
-		}
-	}
-	return errors.New("not found")
+       // Check if task exists first
+       found := false
+       for i := range r.tasks {
+	       if r.tasks[i].ID == id {
+		       found = true
+		       // Remove the task
+		       r.tasks = append(r.tasks[:i], r.tasks[i+1:]...)
+		       if err := r.save(); err != nil {
+			       return err
+		       }
+		       fmt.Printf("Task with id %d was deleted successfully\n", id)
+		       return nil
+	       }
+       }
+       if !found {
+	       return fmt.Errorf("task with id %d was not found", id)
+       }
+       return nil
 }
