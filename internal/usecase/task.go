@@ -52,3 +52,22 @@ func (uc *TaskUseCase) Complete(id int) error {
 func (uc *TaskUseCase) Delete(id int) error {
 	return uc.repo.Delete(id)
 }
+
+// Edit updates the title and/or completed status of a task by id.
+func (uc *TaskUseCase) Edit(id int, newTitle string, completed *bool) error {
+	task, err := uc.repo.GetByID(id)
+	if err != nil {
+		return err
+	}
+	if task == nil {
+		return errors.New("task not found")
+	}
+	if newTitle != "" {
+		task.Title = newTitle
+	}
+	if completed != nil {
+		task.Completed = *completed
+	}
+	task.UpdatedAt = time.Now()
+	return uc.repo.Update(task)
+}

@@ -1,3 +1,20 @@
+### Edit Tasks (Title and Completed Status)
+
+You can edit a task's title and/or its completed status:
+
+```sh
+# Change the title of task with ID 2
+go run cmd/todo/main.go --edit 2 --title "New title for task 2"
+
+# Mark task 2 as completed
+go run cmd/todo/main.go --edit 2 --set-completed true
+
+# Change both title and completed status
+go run cmd/todo/main.go --edit 2 --title "Read Go book" --set-completed true
+
+# Mark task 2 as not completed
+go run cmd/todo/main.go --edit 2 --set-completed false
+```
 
 
 # To-Do List Console App (Go)
