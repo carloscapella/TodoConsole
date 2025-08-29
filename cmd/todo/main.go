@@ -20,6 +20,9 @@ func main() {
 	list := flag.Bool("list", false, "List all tasks")
 	complete := flag.Int("complete", 0, "Mark task as complete by ID")
 	deleteTask := flag.Int("delete", 0, "Delete task by ID")
+	edit := flag.Int("edit", 0, "Edit a task by ID")
+	title := flag.String("title", "", "New title for the task (used with --edit)")
+	setCompleted := flag.String("set-completed", "", "Set completed status: true or false (used with --edit)")
 
 	flag.Parse()
 
@@ -39,5 +42,5 @@ func main() {
 	}
 
 	uc := usecase.NewTaskUseCase(repo)
-	handler.RunCLI(uc, *add, *list, *complete, *deleteTask)
+	handler.RunCLI(uc, *add, *list, *complete, *deleteTask, *edit, *title, *setCompleted)
 }

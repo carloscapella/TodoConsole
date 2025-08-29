@@ -1,9 +1,16 @@
 [
   {
     "id": 1,
-    "title": "Test",
+    "title": "New title for task",
     "completed": false,
     "created_at": "2025-08-28T01:34:10.348934229-03:00",
-    "updated_at": "2025-08-28T01:34:10.348937093-03:00"
+    "updated_at": "2025-08-28T23:42:00.089026023-03:00"
+  },
+  {
+    "id": 2,
+    "title": "Primera tarea",
+    "completed": false,
+    "created_at": "2025-08-28T23:41:59.505347721-03:00",
+    "updated_at": "2025-08-28T23:41:59.505353378-03:00"
   }
 ]
