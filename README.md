@@ -110,6 +110,9 @@ go build -o todo cmd/todo/main.go
 - Handles errors gracefully and provides user feedback
 - Modular code for easy testing and extension
 
+**Performance Note:**
+If you use the JSON file for persistence, keep in mind that every create, update, or delete operation rewrites the entire file. This is fine for a small number of tasks, but performance may degrade with thousands of tasks. For better scalability, use the SQLite backend.
+
 ## Possible Extensions
 - Unit and integration tests
 - Import/export tasks
