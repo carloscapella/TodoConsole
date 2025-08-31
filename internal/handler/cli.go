@@ -28,10 +28,21 @@ type CLIFlags struct {
 	Tags         string
 }
 
+// TaskUseCaseInterface abstracts the use case for handler (for testability)
+type TaskUseCaseInterface interface {
+	Add(title string, priority domain.Priority, tags []string) error
+	Edit(id int, newTitle string, completed *bool) error
+	Complete(id int) error
+	Delete(id int) error
+	List() ([]domain.Task, error)
+	UpdatePriority(id int, priority domain.Priority) error
+	UpdateTags(id int, tags []string) error
+}
+
 // Command represents the CLI command handler
 type Command struct {
 	Flags   CLIFlags
-	useCase *usecase.TaskUseCase
+	useCase TaskUseCaseInterface
 }
 
 // NewCommand creates a new Command instance
@@ -42,8 +53,8 @@ func NewCommand() *Command {
 	return cmd
 }
 
-// SetUseCase sets the use case for the command
-func (c *Command) SetUseCase(uc *usecase.TaskUseCase) {
+// SetUseCase sets the use case for the command (for production)
+func (c *Command) SetUseCase(uc TaskUseCaseInterface) {
 	c.useCase = uc
 }
 

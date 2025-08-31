@@ -1,3 +1,12 @@
+## Running Tests
+
+To run all unit tests for the project, see [TESTING.md](./TESTING.md) or use:
+
+```sh
+go test ./...
+```
+
+This will run all tests in all packages, including subfolders.
 
 # To-Do List Console App (Go)
 
