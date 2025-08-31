@@ -29,6 +29,12 @@ func (r *JSONTaskRepository) load() {
 	defer f.Close()
 	data, _ := ioutil.ReadAll(f)
 	json.Unmarshal(data, &r.tasks)
+	// Ensure Tags is always initialized (for backward compatibility)
+	for i := range r.tasks {
+		if r.tasks[i].Tags == nil {
+			r.tasks[i].Tags = []string{}
+		}
+	}
 }
 
 func (r *JSONTaskRepository) save() error {

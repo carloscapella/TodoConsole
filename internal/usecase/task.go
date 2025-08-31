@@ -26,27 +26,70 @@ func (uc *TaskUseCase) List() ([]domain.Task, error) {
 	return uc.repo.GetAll()
 }
 
-func (uc *TaskUseCase) Add(title string) error {
+func (uc *TaskUseCase) Add(title string, priority domain.Priority, tags []string) error {
+	// Si la prioridad no es válida o está vacía, usar la prioridad por defecto
+	if priority == "" || !domain.ValidatePriority(string(priority)) {
+		priority = domain.GetDefaultPriority()
+	}
+
 	task := &domain.Task{
 		Title:     title,
 		Completed: false,
+		Priority:  priority,
+		Tags:      domain.NormalizeTags(tags),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
 	return uc.repo.Create(task)
 }
 
-func (uc *TaskUseCase) Complete(id int) error {
+func (uc *TaskUseCase) getTask(id int) (*domain.Task, error) {
 	task, err := uc.repo.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+	if task == nil {
+		return nil, domain.ErrTaskNotFound
+	}
+	return task, nil
+}
+
+func (uc *TaskUseCase) updateTask(task *domain.Task) error {
+	task.UpdatedAt = time.Now()
+	return uc.repo.Update(task)
+}
+
+func (uc *TaskUseCase) Complete(id int) error {
+	task, err := uc.getTask(id)
 	if err != nil {
 		return err
 	}
-	if task == nil {
-		return errors.New("task not found")
-	}
 	task.Completed = true
-	task.UpdatedAt = time.Now()
-	return uc.repo.Update(task)
+	return uc.updateTask(task)
+}
+
+func (uc *TaskUseCase) UpdatePriority(id int, priority domain.Priority) error {
+	if !domain.ValidatePriority(string(priority)) {
+		return domain.ErrInvalidPriority
+	}
+
+	task, err := uc.getTask(id)
+	if err != nil {
+		return err
+	}
+
+	task.Priority = priority
+	return uc.updateTask(task)
+}
+
+func (uc *TaskUseCase) UpdateTags(id int, tags []string) error {
+	task, err := uc.getTask(id)
+	if err != nil {
+		return err
+	}
+
+	task.Tags = domain.NormalizeTags(tags)
+	return uc.updateTask(task)
 }
 
 func (uc *TaskUseCase) Delete(id int) error {

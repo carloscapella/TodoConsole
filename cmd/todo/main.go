@@ -14,15 +14,15 @@ func main() {
 
 	// Initialize repository based on flags
 	var repo usecase.TaskRepository
-	if cmd.SQLitePath != "" {
-		sqlRepo, err := repository.NewSQLiteTaskRepository(cmd.SQLitePath)
+	if cmd.Flags.SQLitePath != "" {
+		sqlRepo, err := repository.NewSQLiteTaskRepository(cmd.Flags.SQLitePath)
 		if err != nil {
 			fmt.Println("Error opening SQLite:", err)
 			os.Exit(1)
 		}
 		repo = sqlRepo
-	} else if cmd.UseJSON {
-		repo = repository.NewJSONTaskRepository(cmd.FilePath)
+	} else if cmd.Flags.UseJSON {
+		repo = repository.NewJSONTaskRepository(cmd.Flags.FilePath)
 	} else {
 		fmt.Println("You must specify --json or --sqlite <file>")
 		os.Exit(1)
