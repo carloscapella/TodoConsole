@@ -91,7 +91,6 @@ func (r *JSONTaskRepository) Delete(id int) error {
 			if err := r.save(); err != nil {
 				return err
 			}
-			fmt.Printf("Task with id %d was deleted successfully\n", id)
 			return nil
 		}
 	}

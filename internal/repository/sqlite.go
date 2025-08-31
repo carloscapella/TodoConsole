@@ -122,7 +122,7 @@ func (r *SQLiteTaskRepository) Update(task *domain.Task) error {
 	return err
 }
 
-// marshalTags serializa el slice de tags a JSON
+// marshalTags serializes the tags slice to JSON
 func marshalTags(tags []string) (string, error) {
 	if len(tags) == 0 {
 		return "", nil
@@ -134,7 +134,7 @@ func marshalTags(tags []string) (string, error) {
 	return string(b), nil
 }
 
-// unmarshalTags deserializa el string JSON a slice de tags
+// unmarshalTags deserializes the JSON string to a tags slice
 func unmarshalTags(s string, tags *[]string) error {
 	if s == "" {
 		*tags = []string{}
@@ -163,6 +163,5 @@ func (r *SQLiteTaskRepository) Delete(id int) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("task with id %d was not found", id)
 	}
-	fmt.Printf("Task with id %d was deleted successfully\n", id)
 	return nil
 }

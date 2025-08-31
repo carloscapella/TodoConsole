@@ -112,6 +112,7 @@ func (c *Command) executeEdit() error {
 	// Update tags if specified
 	if c.Flags.Tags != "" {
 		tags := parseTags(c.Flags.Tags)
+		// Centralized normalization in the domain
 		if err := c.useCase.UpdateTags(c.Flags.Edit, tags); err != nil {
 			return fmt.Errorf("error updating tags: %v", err)
 		}
@@ -132,7 +133,7 @@ func (c *Command) executeAdd() error {
 
 	// Handle tags
 	tags := parseTags(c.Flags.Tags)
-
+	// Centralized normalization in the domain
 	if err := c.useCase.Add(c.Flags.Add, priority, tags); err != nil {
 		return err
 	}
@@ -178,11 +179,11 @@ func (c *Command) printUsage() {
 }
 
 // parseTags splits and normalizes a comma-separated list of tags
+// parseTags splits a comma-separated list of tags (no normalization)
 func parseTags(tagsStr string) []string {
 	if tagsStr == "" {
 		return nil
 	}
-
 	var tags []string
 	for _, tag := range strings.Split(tagsStr, ",") {
 		if trimmed := strings.TrimSpace(tag); trimmed != "" {
